@@ -1,3 +1,5 @@
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,7 +16,7 @@ public class LoginSteps {
     WebDriver driver;
     WebDriverWait wait;
 
-    @Given("I open the browser")
+    @Before
     public void iOpenTheBrowser() {
         System.setProperty("webdriver.chrome.driver",
                 "/Users/pauladabrowska/Documents/kurs_tester/automation_tester/Webdrivers/chromedriver");
@@ -22,7 +24,16 @@ public class LoginSteps {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 3);
 //        driver.manage(). - cookies - początek do zarządzania ciasteczkami
+//        driver.navigate(). - do zarządzania rzeczami w przeglądarce - back itp
+//        maksymalizacja okienka
+        driver.manage().window().maximize();
+    }
 
+    @After
+    public void closeBrowser() {
+//        driver.close(); zamyka tylko jedna przegladarke, a testy dalej trwaja
+        driver.quit();
+//        zamyka wszystkie przegladarki i całego procesu - widac ze dziala to w managerze zadań
     }
 
     @And("I am on website")
@@ -71,6 +82,9 @@ public class LoginSteps {
         WebElement element = driver.findElement(By.cssSelector("div#flash"));
         String currentResult = element.getText();
         Assert.assertTrue(currentResult.contains(expectedResult));
+//        zamiast powyższych 4 linijek mogę
+//        checkText(expectedResult);
+
         String loginResult = "You logged into a secure area!";
         Assert.assertFalse(currentResult.contains(loginResult));
 
@@ -82,4 +96,27 @@ public class LoginSteps {
         Assert.assertNotEquals(unexpectedColor, backgroundColor);
 
     }
+
+    @When("I type {string} as login and {string} as password")
+    public void iTypeAsLoginAndAsPassword(String login, String password) {
+//        WebElement element = driver.findElement(By.cssSelector("input[id=username]"));
+//        element.sendKeys(login);
+//        WebElement element1 = driver.findElement(By.cssSelector("input[id=password]"));
+//        element1.sendKeys(password);
+//        WebElement element3 = driver.findElement(By.cssSelector("button[type=submit]"));
+//        element3.click();
+//        zamiast powyższego można wywołać całe metody
+        iTypeLogin(login);
+        iTypePassword(password);
+        iClickLoginButton();
+
+    }
+
+//    private void checkText(String expectedResult) {
+//        WebElement element = driver.findElement(By.cssSelector("div#flash"));
+//        String currentResult = element.getText();
+//        Assert.assertTrue(currentResult.contains(expectedResult));
+//    }
 }
+
+
